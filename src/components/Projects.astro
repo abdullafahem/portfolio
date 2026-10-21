@@ -1,0 +1,33 @@
+---
+import data from '../data/portfolio.json';
+import Section from './Section.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const host = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+// Projects without a screenshot get a generated cover: a hue picked from the name, plus initials
+const hue = (s: string) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+const initials = (s: string) => s.replace(/[^A-Za-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+---
+<Section id="work" title="Selected work" note="products & platforms">
+  <div class="projects">
+    {data.projects.map((p) => {
+      const Tag = p.url ? 'a' : 'div';
+      const link = p.url ? { href: p.url, target: '_blank', rel: 'noopener' } : {};
+      return (
+        <Tag class="project reveal" {...link}>
+          <div class="cover" style={`--h:${hue(p.name)}`}>
+            {p.image
+              ? <img src={`${base}${p.image}`} alt={`${p.name} preview`} loading="lazy" width="640" height="336" />
+              : <span class="mono" aria-hidden="true">{initials(p.name)}</span>}
+          </div>
+          <div class="project-body">
+            <span class="cat">{p.category}</span>
+            <h3>{p.name}</h3>
+            <p title={p.description}>{p.description}</p>
+            {p.url && <span class="url">{host(p.url)} ↗</span>}
+          </div>
+        </Tag>
+      );
+    })}
+  </div>
+</Section>

@@ -1,0 +1,126 @@
+---
+// Print-ready CV built from the same data as the site.
+// `npm run cv` renders this page to public/cv.pdf (see scripts/make-cv.mjs).
+import data from '../data/portfolio.json';
+
+const { profile, contact } = data;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const host = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{profile.name} · CV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" />
+    <style is:inline>
+      @page { size: A4; margin: 14mm 14mm 12mm; }
+      * { box-sizing: border-box; }
+      :root { --ink: #12151B; --muted: #5D6470; --line: #DFE1E4; --accent: #2448D8; }
+      body { margin: 0; color: var(--ink); background: #fff; font: 10pt/1.45 "Inter", system-ui, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page { max-width: 190mm; margin: 0 auto; padding: 24px 0; }
+      @media print { .page { padding: 0; } }
+      h1, h2, h3 { font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif; margin: 0; }
+      header { display: grid; grid-template-columns: 74px 1fr; gap: 18px; align-items: center; padding-bottom: 14px; border-bottom: 2px solid var(--ink); }
+      header img { width: 74px; height: 74px; border-radius: 14px; object-fit: cover; }
+      h1 { font-size: 24pt; letter-spacing: -.03em; line-height: 1; }
+      .role { color: var(--accent); font-weight: 600; margin: 4px 0 6px; }
+      .contact { display: flex; flex-wrap: wrap; gap: 2px 14px; color: var(--muted); font-size: 8.8pt; }
+      .contact a { color: inherit; text-decoration: none; }
+      .summary { margin: 12px 0 0; color: #2b3039; }
+      .cols { display: grid; grid-template-columns: 1fr 58mm; gap: 22px; margin-top: 16px; }
+      h2 { font-size: 9pt; text-transform: uppercase; letter-spacing: .12em; color: var(--accent); margin: 0 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+      section + section { margin-top: 14px; }
+      .job { break-inside: avoid; margin-bottom: 10px; }
+      .job-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+      .job h3 { font-size: 10.5pt; }
+      .when { color: var(--muted); font-size: 8.5pt; white-space: nowrap; font-variant-numeric: tabular-nums; }
+      .org { color: var(--muted); font-size: 9pt; margin: 1px 0 3px; }
+      .org b { color: var(--ink); font-weight: 600; }
+      ul { margin: 0; padding-left: 14px; }
+      li { margin: 1px 0; }
+      .side p, .side li { font-size: 9pt; }
+      .proj { margin-bottom: 6px; break-inside: avoid; }
+      .proj b { display: block; font-size: 9.5pt; }
+      .proj span { color: var(--muted); font-size: 8.6pt; }
+      .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+      .chips span { font-size: 8.4pt; padding: 1px 7px; border: 1px solid var(--line); border-radius: 999px; }
+      .group { font-size: 8.2pt; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 4px; }
+      .edu { margin-bottom: 8px; }
+      .edu b { display: block; font-size: 9.5pt; }
+      .edu span { color: var(--muted); font-size: 8.6pt; }
+      .lang { display: flex; justify-content: space-between; font-size: 9pt; padding: 2px 0; }
+      .lang span { color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <img src={`${base}${profile.photo}`} alt="" />
+        <div>
+          <h1>{profile.name}</h1>
+          <p class="role">{profile.role}</p>
+          <div class="contact">
+            <span>{profile.location}</span>
+            <a href={`mailto:${contact.email}`}>{contact.email}</a>
+            <span>{contact.phone}</span>
+            {contact.linkedin && <a href={contact.linkedin}>{host(contact.linkedin)}</a>}
+            {contact.github && <a href={contact.github}>{host(contact.github)}</a>}
+          </div>
+        </div>
+      </header>
+      <p class="summary">{profile.summary}</p>
+
+      <div class="cols">
+        <div>
+          <section>
+            <h2>Experience</h2>
+            {data.experience.map((j) => (
+              <div class="job">
+                <div class="job-head"><h3>{j.role}</h3><span class="when">{j.start} – {j.end}</span></div>
+                <p class="org"><b>{j.company}</b> · {j.location}</p>
+                <ul>{j.points.map((p) => <li>{p}</li>)}</ul>
+              </div>
+            ))}
+          </section>
+        </div>
+
+        <div class="side">
+          <section>
+            <h2>Selected work</h2>
+            {data.projects.map((p) => (
+              <div class="proj"><b>{p.name}{p.url && ` · ${host(p.url)}`}</b><span>{p.category}</span></div>
+            ))}
+          </section>
+          <section>
+            <h2>Skills</h2>
+            {data.skills.map((s) => (
+              <>
+                <p class="group">{s.group}</p>
+                <div class="chips">{s.items.map((i) => <span>{i}</span>)}</div>
+              </>
+            ))}
+          </section>
+          <section>
+            <h2>Education</h2>
+            {data.education.map((e) => (
+              <div class="edu"><b>{e.degree}</b><span>{e.school} · {e.start} – {e.end}</span></div>
+            ))}
+          </section>
+          <section>
+            <h2>Languages</h2>
+            {data.languages.map((l) => <div class="lang">{l.name}<span>{l.label}</span></div>)}
+          </section>
+          <section>
+            <h2>Teaching</h2>
+            <ul>{data.teaching.topics.map((t) => <li>{t.title}</li>)}</ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

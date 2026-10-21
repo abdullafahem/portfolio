@@ -1,0 +1,16 @@
+---
+import data from '../data/portfolio.json';
+import Section from './Section.astro';
+---
+<Section id="skills" title="Skills" note="stack & practice">
+  <div class="skills">
+    {data.skills.map((g) => (
+      <div class="skill">
+        <h3>{g.group}</h3>
+        <div class="chips">
+          {g.items.map((item) => <span class="chip">{item}</span>)}
+        </div>
+      </div>
+    ))}
+  </div>
+</Section>

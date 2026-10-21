@@ -1,0 +1,165 @@
+{
+  "profile": {
+    "name": "Abdulla Fahem",
+    "role": "Software Engineer & AI Lecturer",
+    "location": "Tirana, Albania",
+    "summary": "Software engineer with 5+ years building scalable web applications and APIs in PHP, Laravel, JavaScript and React. I work across full-stack delivery and Agile teams, and I teach deep learning and reinforcement learning at Universiteti Metropolitan Tirana.",
+    "photo": "avatar.jpg",
+    "cv": "cv.pdf",
+    "available": "Open to engineering and AI collaborations"
+  },
+
+  "contact": {
+    "email": "abdullaf2019@outlook.com",
+    "phone": "+355 67 674 3674",
+    "linkedin": "https://www.linkedin.com/in/abdulla-fahem/",
+    "github": "https://github.com/abdullafahem"
+  },
+
+  "stats": [
+    { "value": "2019", "label": "Writing production code since" },
+    { "value": "5+", "label": "Years with PHP, Laravel, React" },
+    { "value": "MSc", "label": "Data Science & AI" },
+    { "value": "3", "label": "Languages spoken" }
+  ],
+
+  "experience": [
+    {
+      "role": "Founder",
+      "company": "AILinkedPost",
+      "location": "Tirana, Albania",
+      "start": "Apr 2026",
+      "end": "Present",
+      "current": true,
+      "points": [
+        "Founded and built an AI SaaS that turns a single idea into a ready-to-publish LinkedIn post or designed carousel in under 30 seconds.",
+        "Shipped style-matched writing in 12 languages, tone presets and plain-language AI refinement.",
+        "Built scheduling, a content calendar and team workspaces with direct publishing to LinkedIn."
+      ],
+      "tags": ["AI", "SaaS", "Product", "Founder"]
+    },
+    {
+      "role": "Software Engineer",
+      "company": "Lufthansa Industry Solutions",
+      "location": "Tirana, Albania",
+      "start": "May 2025",
+      "end": "Present",
+      "current": true,
+      "points": [
+        "Design and maintain enterprise software in a PHP/Laravel environment across full-stack delivery.",
+        "Build scalable back-end services and APIs, contributing to the front end where needed.",
+        "Apply AI and automation to improve system functionality and process efficiency.",
+        "Take part in solution design, testing, code reviews and documentation in Agile teams.",
+        "Support deployment, troubleshooting and continuous improvement of production systems."
+      ],
+      "tags": ["PHP", "Laravel", "REST APIs", "Agile"]
+    },
+    {
+      "role": "Lecturer",
+      "company": "Universiteti Metropolitan Tirana",
+      "location": "Tirana, Albania",
+      "start": "Oct 2026",
+      "end": "Present",
+      "current": true,
+      "points": [
+        "Deliver lectures and hands-on seminars on neural networks, CNNs, RNNs, deep model training and reinforcement learning.",
+        "Develop live coding demos and reproducible notebooks connecting theory to practice.",
+        "Supervise student projects and prepare assessment and examination materials."
+      ],
+      "tags": ["Deep Learning", "Reinforcement Learning", "Teaching"]
+    },
+    {
+      "role": "Head of Development & Full-Stack Developer",
+      "company": "Arbah Taiba",
+      "location": "Madinah, Saudi Arabia (remote)",
+      "start": "Dec 2023",
+      "end": "Present",
+      "current": true,
+      "points": [
+        "Lead software development strategy for a real estate and development company.",
+        "Architect and build the company's web platforms end to end."
+      ],
+      "tags": ["Leadership", "Full-stack"]
+    },
+    {
+      "role": "Full-Stack Developer",
+      "company": "FahemDev",
+      "location": "Independent",
+      "start": "May 2019",
+      "end": "Present",
+      "current": true,
+      "points": [
+        "Build web applications with Laravel and React.js across back end and front end.",
+        "Design RESTful APIs connecting back-end services with front-end interfaces.",
+        "Own databases, including schema design and optimization.",
+        "Maintain existing codebases and ship new features with sprint planning and code reviews."
+      ],
+      "tags": ["Laravel", "React", "MySQL"]
+    },
+    {
+      "role": "Front-end Developer",
+      "company": "WoW Digital",
+      "location": "Tirana, Albania",
+      "start": "Jul 2023",
+      "end": "Nov 2023",
+      "current": false,
+      "points": [
+        "Built government web applications including KQZ, SIM and the Elbasan Municipality parking system.",
+        "Developed responsive React.js interfaces that meet WCAG accessibility standards.",
+        "Worked with UX/UI designers and back-end developers on performance, security and scalability."
+      ],
+      "tags": ["React", "WCAG", "GovTech"]
+    },
+    {
+      "role": "Freelance Full-Stack Developer",
+      "company": "Self-employed",
+      "location": "Remote",
+      "start": "2020",
+      "end": "2022",
+      "current": false,
+      "points": [
+        "Delivered Veontime, Papaya and A-Tourism for clients in mobility, retail and tourism."
+      ],
+      "tags": ["Freelance"]
+    }
+  ],
+
+  "projects": [
+    { "name": "AILinkedPost", "category": "AI SaaS", "description": "AI tool that turns one idea into a ready-to-publish LinkedIn post or carousel in under 30 seconds, with scheduling and team workspaces.", "url": "https://ailinkedpost.com", "image": "work/ailinkedpost.jpg" },
+    { "name": "Arbah Taiba", "category": "Real estate", "description": "Web platform for a real estate and development company in Madinah.", "url": "", "image": "work/arbahtaiba.png" },
+    { "name": "Papaya", "category": "E-commerce", "description": "Online store for an Albanian retail brand.", "url": "", "image": "work/papaya.png" },
+    { "name": "A-Tourism", "category": "Tourism", "description": "Travel platform for discovering and booking trips in Albania.", "url": "", "image": "work/atourism.png" },
+    { "name": "Veontime", "category": "Mobility SaaS", "description": "Vertical software for bus and coach carriers worldwide, offered on a Mobility-as-a-Service model.", "url": "", "image": "" },
+    { "name": "KQZ & SIM", "category": "GovTech", "description": "Public web applications for Albanian state institutions, built at WoW Digital.", "url": "", "image": "" },
+    { "name": "Elbasan Parking", "category": "GovTech", "description": "Municipal parking system for the City of Elbasan.", "url": "", "image": "" }
+  ],
+
+  "teaching": {
+    "institution": "Universiteti Metropolitan Tirana",
+    "topics": [
+      { "title": "Neural network fundamentals", "text": "Perceptrons, backpropagation and optimization." },
+      { "title": "CNNs & RNNs", "text": "Convolutional and recurrent architectures for vision and sequences." },
+      { "title": "Training deep models", "text": "Regularization, debugging training runs and sound evaluation." },
+      { "title": "Reinforcement learning", "text": "MDPs, dynamic programming, Monte Carlo, TD methods and deep RL." }
+    ],
+    "statement": "I bring industry experience in software engineering and AI into the classroom, with a focus on practical implementation, sound evaluation and clear intuition behind the mathematics."
+  },
+
+  "skills": [
+    { "group": "Back end", "items": ["PHP", "Laravel", "MySQL", "RESTful APIs"] },
+    { "group": "Front end", "items": ["React", "JavaScript", "Accessible UI (WCAG)"] },
+    { "group": "AI & data", "items": ["Deep learning", "Reinforcement learning", "Automation"] },
+    { "group": "Delivery", "items": ["Scrum", "Code reviews", "Testing", "Troubleshooting"] }
+  ],
+
+  "education": [
+    { "degree": "MSc, Data Science & Artificial Intelligence", "school": "University of Tirana", "start": "Oct 2024", "end": "Sep 2026", "url": "https://fshn.edu.al/" },
+    { "degree": "BSc, Computer Science", "school": "University of Tirana", "start": "Oct 2020", "end": "Jul 2023", "url": "https://fshn.edu.al/" }
+  ],
+
+  "languages": [
+    { "name": "Albanian", "level": 100, "label": "Native" },
+    { "name": "Arabic", "level": 100, "label": "C2" },
+    { "name": "English", "level": 84, "label": "C1" }
+  ]
+}

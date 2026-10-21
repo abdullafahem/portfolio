@@ -1,0 +1,349 @@
+---
+import '../styles/global.css';
+import data from '../data/portfolio.json';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const site = Astro.site ?? new URL('http://localhost:4321');
+const pageUrl = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(`${base}og.jpg`, site).href;
+const { profile, contact } = data;
+
+// Structured data so search engines understand who this page is about
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.role,
+  url: pageUrl,
+  image: new URL(`${base}${profile.photo}`, site).href,
+  email: `mailto:${contact.email}`,
+  address: { '@type': 'PostalAddress', addressLocality: 'Tirana', addressCountry: 'AL' },
+  sameAs: [contact.linkedin, contact.github].filter(Boolean),
+  worksFor: data.experience.filter((j) => j.current).map((j) => ({ '@type': 'Organization', name: j.company })),
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'University of Tirana' },
+  knowsAbout: data.skills.flatMap((s) => s.items),
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={pageUrl} />
+    <meta name="author" content={profile.name} />
+    <meta name="theme-color" content="#0E1116" />
+
+    <!-- Link previews (LinkedIn, WhatsApp, Facebook, X) -->
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${profile.name}, ${profile.role}`} />
+    <meta property="profile:first_name" content={profile.name.split(' ')[0]} />
+    <meta property="profile:last_name" content={profile.name.split(' ').slice(1).join(' ')} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/png" sizes="32x32" href={`${base}favicon-32.png`} />
+    <link rel="icon" type="image/png" sizes="192x192" href={`${base}icon-192.png`} />
+    <link rel="apple-touch-icon" href={`${base}apple-touch-icon.png`} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(person)} />
+
+    <!-- Apply the saved or system theme before the page paints, so there is no flash -->
+    <script is:inline>
+      (function () {
+        document.documentElement.classList.add('js'); // lets scroll animations hide content only when JS can reveal it
+        var saved = null;
+        try { saved = localStorage.getItem('theme'); } catch (e) {}
+        var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', saved || (dark ? 'dark' : 'light'));
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+  </head>
+  <body>
+    <div class="fx" aria-hidden="true">
+      <div class="aurora"><i></i><i></i><i></i></div>
+      <div class="grid"></div>
+      <canvas id="bg"></canvas>
+    </div>
+    <slot />
+
+    <script>
+      // ----- Light / dark toggle -----
+      const root = document.documentElement;
+      const btn = document.getElementById('theme-toggle');
+      const label = document.getElementById('theme-label');
+
+      function paint() {
+        const t = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        if (label) label.textContent = t === 'dark' ? 'Dark' : 'Light';
+        btn?.setAttribute('aria-label', `Switch to ${t === 'dark' ? 'light' : 'dark'} mode`);
+      }
+      btn?.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+        paint();
+      });
+      paint();
+
+
+      // ----- Futuristic background: node network with travelling light pulses + cursor spotlight -----
+      const cv = document.getElementById('bg') as HTMLCanvasElement | null;
+      const ctx = cv?.getContext('2d');
+      if (cv && ctx) {
+        const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const hex = (v: string, fb: number[]) => {
+          const m = /^#([0-9a-f]{6})$/i.exec(v.trim());
+          return m ? [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16)) : fb;
+        };
+        let w = 0, h = 0, c1 = [125, 149, 255], c2 = [34, 211, 238], dark = true;
+        const mouse = { x: -9999, y: -9999 };
+        type Node = { x: number; y: number; vx: number; vy: number; glow: number };
+        type Pulse = { a: number; b: number; t: number; hops: number };
+        let nodes: Node[] = [];
+        let pulses: Pulse[] = [];
+        const D = 150;
+
+        const readTheme = () => {
+          const cs = getComputedStyle(root);
+          c1 = hex(cs.getPropertyValue('--accent'), c1);
+          c2 = hex(cs.getPropertyValue('--accent-3'), c2);
+          dark = root.getAttribute('data-theme') === 'dark';
+        };
+        // colour blends from accent (left) to cyan (right)
+        const mix = (k: number, a: number) =>
+          `rgba(${c1.map((v, i) => Math.round(v + (c2[i] - v) * k)).join(',')},${a})`;
+
+        const resize = () => {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          w = window.innerWidth; h = window.innerHeight;
+          cv.width = w * dpr; cv.height = h * dpr;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          const n = Math.min(110, Math.floor((w * h) / 15000));
+          nodes = Array.from({ length: n }, () => ({
+            x: Math.random() * w, y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, glow: 0,
+          }));
+          pulses = [];
+        };
+
+        const neighbour = (i: number, not = -1) => {
+          let best = -1, bd = D;
+          const p = nodes[i];
+          for (let j = 0; j < nodes.length; j++) {
+            if (j === i || j === not) continue;
+            const d = Math.hypot(p.x - nodes[j].x, p.y - nodes[j].y);
+            if (d < bd && Math.random() > 0.35) { bd = d; best = j; }
+          }
+          return best;
+        };
+
+        let last = 0, spawn = 0;
+        const frame = (now = 0) => {
+          const dt = Math.min(50, now - last || 16); last = now;
+          ctx.clearRect(0, 0, w, h);
+          const A = dark ? 1 : 0.6;
+
+          for (const p of nodes) {
+            if (!still) {
+              // gentle push away from the cursor
+              const mx = p.x - mouse.x, my = p.y - mouse.y, md = Math.hypot(mx, my);
+              if (md < 120 && md > 0) { p.x += (mx / md) * 0.6; p.y += (my / md) * 0.6; }
+              p.x += p.vx; p.y += p.vy;
+              if (p.x < 0 || p.x > w) p.vx *= -1;
+              if (p.y < 0 || p.y > h) p.vy *= -1;
+            }
+            p.glow *= 0.94;
+          }
+
+          ctx.lineWidth = 1;
+          for (let i = 0; i < nodes.length; i++) {
+            const p = nodes[i];
+            for (let j = i + 1; j < nodes.length; j++) {
+              const q = nodes[j], d = Math.hypot(p.x - q.x, p.y - q.y);
+              if (d < D) {
+                ctx.strokeStyle = mix(p.x / w, (1 - d / D) * 0.22 * A);
+                ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+              }
+            }
+            const md = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+            if (md < 200) {
+              ctx.strokeStyle = mix(0.5, (1 - md / 200) * 0.45 * A);
+              ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+            }
+          }
+
+          for (const p of nodes) {
+            if (p.glow > 0.05) {
+              const R = 16 * p.glow + 4;
+              const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, R);
+              g.addColorStop(0, mix(p.x / w, 0.6 * p.glow * A));
+              g.addColorStop(1, mix(p.x / w, 0));
+              ctx.fillStyle = g;
+              ctx.beginPath(); ctx.arc(p.x, p.y, R, 0, 6.283); ctx.fill();
+            }
+            ctx.fillStyle = mix(p.x / w, (0.5 + p.glow * 0.5) * A);
+            ctx.beginPath(); ctx.arc(p.x, p.y, 1.5 + p.glow * 2.5, 0, 6.283); ctx.fill();
+          }
+
+          if (!still) {
+            // light pulses hop along the network and make nodes flare when they arrive
+            spawn -= dt;
+            if (spawn <= 0 && pulses.length < 14 && nodes.length > 1) {
+              const a = Math.floor(Math.random() * nodes.length), b = neighbour(a);
+              if (b >= 0) pulses.push({ a, b, t: 0, hops: 2 + Math.floor(Math.random() * 4) });
+              spawn = 260 + Math.random() * 400;
+            }
+            pulses = pulses.filter((u) => {
+              const p = nodes[u.a], q = nodes[u.b];
+              if (!p || !q) return false;
+              u.t += dt / 700;
+              if (u.t >= 1) {
+                q.glow = 1;
+                const next = u.hops > 0 ? neighbour(u.b, u.a) : -1;
+                if (next < 0) return false;
+                u.a = u.b; u.b = next; u.t = 0; u.hops--;
+                return true;
+              }
+              const x = p.x + (q.x - p.x) * u.t, y = p.y + (q.y - p.y) * u.t;
+              const k = Math.max(0, u.t - 0.25);
+              const tx = p.x + (q.x - p.x) * k, ty = p.y + (q.y - p.y) * k;
+              const tail = ctx.createLinearGradient(tx, ty, x, y);
+              tail.addColorStop(0, mix(x / w, 0));
+              tail.addColorStop(1, mix(x / w, 0.9 * A));
+              ctx.strokeStyle = tail; ctx.lineWidth = 2;
+              ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(x, y); ctx.stroke();
+              ctx.fillStyle = mix(x / w, A);
+              ctx.beginPath(); ctx.arc(x, y, 2.2, 0, 6.283); ctx.fill();
+              return true;
+            });
+            ctx.lineWidth = 1;
+            requestAnimationFrame(frame); // browsers pause this automatically in hidden tabs
+          }
+        };
+
+        const fx = document.querySelector<HTMLElement>('.fx');
+        window.addEventListener('resize', () => { resize(); if (still) frame(); });
+        window.addEventListener('mousemove', (e) => {
+          mouse.x = e.clientX; mouse.y = e.clientY;
+          fx?.style.setProperty('--mx', `${e.clientX}px`);
+          fx?.style.setProperty('--my', `${e.clientY}px`);
+        });
+        document.addEventListener('mouseleave', () => { mouse.x = mouse.y = -9999; });
+        new MutationObserver(() => { readTheme(); if (still) frame(); })
+          .observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+        readTheme();
+        resize();
+        frame();
+      }
+
+      // ----- Fade-in on scroll + count-up stats -----
+      const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const countUp = (el: HTMLElement) => {
+        const m = /^(\d+)(.*)$/.exec(el.dataset.count || '');
+        if (!m || calm) return;
+        const end = +m[1], from = end > 1000 ? end - 30 : 0, t0 = performance.now(), dur = 1400;
+        const tick = (now: number) => {
+          const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+          el.textContent = Math.round(from + (end - from) * e) + m[2];
+          if (k < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+      document.querySelectorAll<HTMLElement>('.stat, .sec-head, .commit, .topic, .skill, .edu, .lang, .row, .statement')
+        .forEach((el) => el.classList.add('reveal'));
+      const targets = document.querySelectorAll<HTMLElement>('.reveal');
+      if ('IntersectionObserver' in window && !calm) {
+        const ro = new IntersectionObserver((entries) => entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          const el = en.target as HTMLElement;
+          // stagger siblings in the same grid so cards cascade in
+          const i = [...(el.parentElement?.children || [])].indexOf(el);
+          const delay = Math.min(i, 6) * 70;
+          el.style.transitionDelay = `${delay}ms`;
+          el.classList.add('in');
+          setTimeout(() => (el.style.transitionDelay = ''), delay + 700); // keep hover effects instant afterwards
+          el.querySelectorAll<HTMLElement>('[data-count]').forEach(countUp);
+          ro.unobserve(el);
+        }), { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+        targets.forEach((el) => ro.observe(el));
+      } else {
+        targets.forEach((el) => el.classList.add('in'));
+      }
+
+      // ----- Copy buttons -----
+      document.querySelectorAll<HTMLButtonElement>('.copy').forEach((b) => {
+        b.addEventListener('click', () => {
+          const el = document.getElementById(b.dataset.target || '');
+          if (!el) return;
+          const flash = (msg: string) => {
+            b.textContent = msg;
+            setTimeout(() => (b.textContent = 'Copy'), 1600);
+          };
+          const select = () => {
+            const r = document.createRange();
+            r.selectNodeContents(el);
+            const s = window.getSelection();
+            s?.removeAllRanges();
+            s?.addRange(r);
+            flash('Selected');
+          };
+          try {
+            navigator.clipboard.writeText(el.textContent?.trim() || '').then(() => flash('Copied'), select);
+          } catch (e) {
+            select();
+          }
+        });
+      });
+
+      // ----- Highlight the current section in the sidebar -----
+      // The active section is the last one whose top has passed 35% of the screen. At the very bottom of
+      // the page the last section wins, because short final sections (Contact) can never scroll that high.
+      const links = [...document.querySelectorAll<HTMLAnchorElement>('.nav a')];
+      const secs = [...document.querySelectorAll<HTMLElement>('main section[id]')];
+      const setActive = (id: string) =>
+        links.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+      let ticking = false, locked = false;
+      // a clicked item stays lit until the visitor scrolls by hand again
+      links.forEach((a) => a.addEventListener('click', () => {
+        locked = true;
+        setActive((a.getAttribute('href') || '').slice(1));
+      }));
+      ['wheel', 'touchmove', 'keydown'].forEach((t) =>
+        window.addEventListener(t, () => (locked = false), { passive: true }));
+      const update = () => {
+        ticking = false;
+        if (!secs.length || locked) return;
+        const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+        let current = secs[0];
+        for (const s of secs) if (s.getBoundingClientRect().top <= window.innerHeight * 0.35) current = s;
+        setActive(atBottom ? secs[secs.length - 1].id : current.id);
+      };
+      window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    </script>
+  </body>
+</html>

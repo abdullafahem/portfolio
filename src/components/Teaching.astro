@@ -1,0 +1,18 @@
+---
+import data from '../data/portfolio.json';
+import Section from './Section.astro';
+
+const t = data.teaching;
+---
+<Section id="teaching" title="Teaching" note={t.institution}>
+  <div class="topics">
+    {t.topics.map((topic, i) => (
+      <div class="topic">
+        <span class="n">Topic {i + 1}</span>
+        <h3>{topic.title}</h3>
+        <p>{topic.text}</p>
+      </div>
+    ))}
+  </div>
+  <p class="statement">{t.statement}</p>
+</Section>

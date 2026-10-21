@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Experience from '../components/Experience.astro';
+import Projects from '../components/Projects.astro';
+import Teaching from '../components/Teaching.astro';
+import Skills from '../components/Skills.astro';
+import Education from '../components/Education.astro';
+import Contact from '../components/Contact.astro';
+import data from '../data/portfolio.json';
+
+const { profile } = data;
+const year = new Date().getFullYear();
+---
+<Base title={`${profile.name} · ${profile.role}`} description={profile.summary}>
+  <div class="layout">
+    <Sidebar />
+    <main>
+      <div class="stats">
+        {data.stats.map((s) => (
+          <div class="stat"><b data-count={s.value}>{s.value}</b><span>{s.label}</span></div>
+        ))}
+      </div>
+      <Experience />
+      <Projects />
+      <Teaching />
+      <Skills />
+      <Education />
+      <Contact />
+      <footer>
+        <span>© {year} {profile.name}</span>
+        <span>{profile.location}</span>
+      </footer>
+    </main>
+  </div>
+</Base>

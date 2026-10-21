@@ -1,0 +1,28 @@
+---
+import data from '../data/portfolio.json';
+import Section from './Section.astro';
+---
+<Section id="education" title="Education & languages" note="CEFR levels">
+  <div class="two">
+    <div>
+      {data.education.map((e) => (
+        <div class="edu">
+          <h3>{e.degree}</h3>
+          <p>
+            {e.url ? <a href={e.url} target="_blank" rel="noopener">{e.school}</a> : e.school}
+          </p>
+          <span class="when">{e.start} – {e.end}</span>
+        </div>
+      ))}
+    </div>
+    <div>
+      {data.languages.map((l) => (
+        <div class="lang">
+          <span>{l.name}</span>
+          <div class="bar"><i style={`width:${l.level}%`}></i></div>
+          <span class="lv">{l.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</Section>

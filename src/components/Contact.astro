@@ -1,0 +1,35 @@
+---
+import data from '../data/portfolio.json';
+
+const c = data.contact;
+const host = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+const rows = [
+  c.email && { key: 'Email', value: c.email, copy: true },
+  c.phone && { key: 'Phone', value: c.phone, copy: true },
+  c.linkedin && { key: 'LinkedIn', value: host(c.linkedin), href: c.linkedin },
+  c.github && { key: 'GitHub', value: host(c.github), href: c.github },
+].filter(Boolean) as { key: string; value: string; copy?: boolean; href?: string }[];
+---
+<section id="contact" class="contact">
+  <h2>Let's work <em>together.</em></h2>
+  <div class="rows">
+    {rows.map((r, i) => (
+      <div class="row">
+        <span class="k">{r.key}</span>
+        {r.href ? (
+          <>
+            <a class="v" href={r.href} target="_blank" rel="noopener">{r.value} ↗</a>
+            <span></span>
+          </>
+        ) : (
+          <>
+            <span class="v" id={`contact-${i}`}>
+              {r.key === 'Email' ? <a href={`mailto:${r.value}`}>{r.value}</a> : r.value}
+            </span>
+            <button class="copy" type="button" data-target={`contact-${i}`}>Copy</button>
+          </>
+        )}
+      </div>
+    ))}
+  </div>
+</section>
