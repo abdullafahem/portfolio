@@ -126,9 +126,9 @@
 
   "projects": [
     { "name": "AILinkedPost", "category": "AI SaaS", "description": "AI tool that turns one idea into a ready-to-publish LinkedIn post or carousel in under 30 seconds, with scheduling and team workspaces.", "url": "https://ailinkedpost.com", "image": "work/ailinkedpost.jpg" },
-    { "name": "Arbah Taiba", "category": "Real estate", "description": "Web platform for a real estate and development company in Madinah.", "url": "", "image": "work/arbahtaiba.png" },
-    { "name": "Papaya", "category": "E-commerce", "description": "Online store for an Albanian retail brand.", "url": "", "image": "work/papaya.png" },
-    { "name": "A-Tourism", "category": "Tourism", "description": "Travel platform for discovering and booking trips in Albania.", "url": "", "image": "work/atourism.png" },
+    { "name": "Arbah Taiba", "category": "Real estate", "description": "Web platform for a real estate and development company in Madinah.", "url": "", "image": "work/arbahtaiba.jpg" },
+    { "name": "Papaya", "category": "E-commerce", "description": "Online store for an Albanian retail brand.", "url": "", "image": "work/papaya.jpg" },
+    { "name": "A-Tourism", "category": "Tourism", "description": "Travel platform for discovering and booking trips in Albania.", "url": "", "image": "work/atourism.jpg" },
     { "name": "Veontime", "category": "Mobility SaaS", "description": "Vertical software for bus and coach carriers worldwide, offered on a Mobility-as-a-Service model.", "url": "", "image": "" },
     { "name": "KQZ & SIM", "category": "GovTech", "description": "Public web applications for Albanian state institutions, built at WoW Digital.", "url": "", "image": "" },
     { "name": "Elbasan Parking", "category": "GovTech", "description": "Municipal parking system for the City of Elbasan.", "url": "", "image": "" }

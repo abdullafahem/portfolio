@@ -89,6 +89,19 @@ const person = {
     </div>
     <slot />
 
+    <button class="to-top" id="to-top" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0l-6 6m6-6l6 6" /></svg>
+    </button>
+
+    <div class="cookies" id="cookies" role="region" aria-label="Cookie notice" hidden>
+      <p>
+        <b>Cookies</b>
+        This site uses no tracking or advertising cookies. It only remembers your light/dark choice in your browser.
+        Fonts are loaded from Google Fonts.
+      </p>
+      <button type="button" id="cookies-ok">Got it</button>
+    </div>
+
     <script>
       // ----- Light / dark toggle -----
       const root = document.documentElement;
@@ -124,7 +137,9 @@ const person = {
         type Pulse = { a: number; b: number; t: number; hops: number };
         let nodes: Node[] = [];
         let pulses: Pulse[] = [];
-        const D = 150;
+        // phones and tablets get a lighter network: fewer nodes, shorter links, lower resolution
+        const lite = window.matchMedia('(pointer: coarse), (max-width: 760px)').matches;
+        const D = lite ? 120 : 150;
 
         const readTheme = () => {
           const cs = getComputedStyle(root);
@@ -137,11 +152,11 @@ const person = {
           `rgba(${c1.map((v, i) => Math.round(v + (c2[i] - v) * k)).join(',')},${a})`;
 
         const resize = () => {
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const dpr = Math.min(window.devicePixelRatio || 1, lite ? 1.5 : 2);
           w = window.innerWidth; h = window.innerHeight;
           cv.width = w * dpr; cv.height = h * dpr;
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          const n = Math.min(110, Math.floor((w * h) / 15000));
+          const n = Math.min(lite ? 40 : 110, Math.floor((w * h) / (lite ? 22000 : 15000)));
           nodes = Array.from({ length: n }, () => ({
             x: Math.random() * w, y: Math.random() * h,
             vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, glow: 0,
@@ -211,7 +226,7 @@ const person = {
           if (!still) {
             // light pulses hop along the network and make nodes flare when they arrive
             spawn -= dt;
-            if (spawn <= 0 && pulses.length < 14 && nodes.length > 1) {
+            if (spawn <= 0 && pulses.length < (lite ? 5 : 14) && nodes.length > 1) {
               const a = Math.floor(Math.random() * nodes.length), b = neighbour(a);
               if (b >= 0) pulses.push({ a, b, t: 0, hops: 2 + Math.floor(Math.random() * 4) });
               spawn = 260 + Math.random() * 400;
@@ -291,6 +306,31 @@ const person = {
         targets.forEach((el) => ro.observe(el));
       } else {
         targets.forEach((el) => el.classList.add('in'));
+      }
+
+      // ----- Back to top: appears after the first screen of scrolling -----
+      const toTop = document.getElementById('to-top');
+      const showTop = () => toTop?.classList.toggle('show', window.scrollY > window.innerHeight * 0.8);
+      window.addEventListener('scroll', showTop, { passive: true });
+      showTop();
+      toTop?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
+        document.querySelector<HTMLElement>('.side h1')?.focus({ preventScroll: true });
+      });
+
+      // ----- Cookie notice: shown once, dismissal remembered in this browser -----
+      const cookies = document.getElementById('cookies');
+      let seen = false;
+      try { seen = localStorage.getItem('cookie-notice') === 'ok'; } catch (e) {}
+      if (cookies && !seen) {
+        cookies.hidden = false;
+        document.body.classList.add('has-cookies');
+        document.getElementById('cookies-ok')?.addEventListener('click', () => {
+          try { localStorage.setItem('cookie-notice', 'ok'); } catch (e) {}
+          cookies.classList.add('bye');
+          document.body.classList.remove('has-cookies');
+          setTimeout(() => (cookies.hidden = true), 300);
+        });
       }
 
       // ----- Copy buttons -----
