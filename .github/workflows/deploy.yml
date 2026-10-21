@@ -19,12 +19,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 22
+          # Astro 7 needs Node >= 22.23.4; the 24 LTS line satisfies that on every runner
+          node-version: 24
 
       - name: Work out the site address
         # username.github.io repo  -> https://username.github.io/

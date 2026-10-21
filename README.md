@@ -40,7 +40,7 @@ This repository contains the source code of my personal portfolio: a fast, stati
 
 ## Getting started
 
-**Requirements:** [Node.js](https://nodejs.org) 22.23 or newer.
+**Requirements:** [Node.js](https://nodejs.org) 22.23.4 or newer (24 LTS recommended).
 
 ```bash
 git clone https://github.com/abdullafahem/portfolio.git
