@@ -3,7 +3,7 @@
     "name": "Abdulla Fahem",
     "role": "Software Engineer & AI Lecturer",
     "location": "Tirana, Albania",
-    "summary": "Software engineer with 5+ years building scalable web applications and APIs in PHP, Laravel, JavaScript and React. I work across full-stack delivery and Agile teams, and I teach deep learning and reinforcement learning at Universiteti Metropolitan Tirana.",
+    "summary": "Software engineer with 5+ years building scalable web applications and APIs in PHP, Laravel, JavaScript and React. I work across full-stack delivery and Agile teams, and I teach deep learning and reinforcement learning at University Metropolitan Tirana.",
     "photo": "avatar.jpg",
     "cv": "cv.pdf",
     "available": "Open to engineering and AI collaborations"
@@ -56,7 +56,7 @@
     },
     {
       "role": "Lecturer",
-      "company": "Universiteti Metropolitan Tirana",
+      "company": "University Metropolitan Tirana",
       "location": "Tirana, Albania",
       "start": "Oct 2026",
       "end": "Present",
@@ -135,7 +135,7 @@
   ],
 
   "teaching": {
-    "institution": "Universiteti Metropolitan Tirana",
+    "institution": "University Metropolitan Tirana",
     "topics": [
       { "title": "Neural network fundamentals", "text": "Perceptrons, backpropagation and optimization." },
       { "title": "CNNs & RNNs", "text": "Convolutional and recurrent architectures for vision and sequences." },
